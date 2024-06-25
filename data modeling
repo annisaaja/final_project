@@ -1,0 +1,107 @@
+Table DimCustomer {
+  customer_id integer [primary key]
+  first_name varchar
+  last_name varchar
+  address varchar
+  gender varchar
+  zip_code varchar
+}
+
+Table DimProduct {
+  product_id integer [primary key]
+  name varchar
+  price float
+  category_id integer
+  supplier_id integer
+}
+
+Table DimSupplier {
+  supplier_id integer [primary key]
+  name varchar
+  country varchar
+}
+
+Table DimCategory {
+  category_id integer [primary key]
+  name varchar
+}
+
+Table DimCoupon {
+  coupon_id integer [primary key]
+  discount_percent float
+}
+
+Table DimDate {
+  date_id integer [primary key]
+  date date
+  day integer
+  month integer
+  year integer
+  weekday integer
+}
+
+Table FactSales {
+  order_id integer
+  customer_id integer
+  product_id integer
+  coupon_id integer
+  date_id integer
+  amount integer
+  total_price float
+}
+
+Table FactLoginAttempts {
+  login_attempt_id integer [primary key]
+  customer_id integer
+  login_successful boolean
+  attempted_at timestamp
+}
+
+
+Table FactCustomerActivity {
+  activity_id integer [primary key]
+  customer_id integer
+  order_id integer
+  login_attempt_id integer
+  activity_date date
+  activity_type varchar 
+}
+
+Table DimOrders {
+  order_id integer [primary key]
+  customer_id varchar
+  status text 
+  created_at timestamp
+}
+Table DimOrder_items {
+  order_items_id integer [primary key]
+  order_id integer
+  product_id integer
+  amount integer
+  coupon_id integer
+}
+
+Ref: FactSales.customer_id > DimCustomer.customer_id
+Ref: FactSales.product_id > DimProduct.product_id
+Ref: FactSales.coupon_id > DimCoupon.coupon_id
+Ref: FactSales.date_id > DimDate.date_id
+Ref: FactSales.order_id > DimOrders.order_id
+
+Ref: FactLoginAttempts.customer_id > DimCustomer.customer_id
+
+Ref: DimCategory.category_id> DimProduct.category_id
+Ref: DimProduct.supplier_id > DimSupplier.supplier_id
+
+
+Ref: FactCustomerActivity.customer_id > DimCustomer.customer_id
+Ref: FactCustomerActivity.login_attempt_id > FactLoginAttempts.login_attempt_id
+Ref: FactCustomerActivity.activity_date > DimDate.date_id
+Ref: FactCustomerActivity.order_id > DimOrders.order_id
+
+
+Ref: DimOrders.customer_id < DimCustomer.customer_id
+Ref: DimOrder_items.order_id > DimOrders.order_id
+Ref: DimOrder_items.product_id > DimProduct.product_id
+Ref: DimOrder_items.coupon_id > DimCoupon.coupon_id
+
+
